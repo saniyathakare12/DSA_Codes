@@ -1,0 +1,139 @@
+/**Design a program to maintain a student database that performs the following tasks:
+a. Add and store student details (ID, Name, CGPA) using dynamically allocated
+memory.
+b. Implement Linear Search and Binary Search to find student records by ID. **/
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+struct Student 
+{
+    int id;
+    char name[40];
+    float cgpa;
+};
+
+// Function to add students
+void addStudent(struct Student *s, int n)
+{
+    for (int i = 0; i < n; i++)  
+    {
+        cout << "\nEnter details of the student " << i + 1 << ":\n";
+        cout << "ID: ";
+        cin >> s[i].id;
+        cin.ignore(); // clear buffer before reading name
+        cout << "Name: ";
+        cin.getline(s[i].name, 40); // read full name
+        cout << "CGPA: ";
+        cin >> s[i].cgpa;
+    }
+}
+
+// Display function
+void display(struct Student *s, int n) 
+{
+    cout << "\nID\tName\tCGPA\n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << s[i].id << "\t" << s[i].name << "\t" << s[i].cgpa << endl;
+    }
+}
+
+// Linear Search
+void linear_search(struct Student *s, int n, int tar)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (s[i].id == tar)
+        {
+            cout << "\n[Linear Search] Student found:\n";
+            cout << "ID: " << s[i].id << "\n";
+            cout << "Name: " << s[i].name << "\n";
+            cout << "CGPA: " << s[i].cgpa << "\n";
+            return;
+        }
+    }
+    cout << "\n[Linear Search] Student with ID " << tar << " NOT FOUND!\n";
+}
+
+// Binary Search (requires sorted array)
+void binary_search(struct Student *s, int start, int end, int tar)
+{
+    while (start <= end)
+    {
+        int mid = (start + end) / 2;
+        if (s[mid].id == tar)
+        {
+            cout << "\n[Binary Search] Student found:\n";
+            cout << "ID: " << s[mid].id << "\n";
+            cout << "Name: " << s[mid].name << "\n";
+            cout << "CGPA: " << s[mid].cgpa << "\n";
+            return;
+        }
+        else if (tar < s[mid].id)
+            end = mid - 1;
+        else
+            start = mid + 1;
+    }
+    cout << "\n[Binary Search] Student with ID " << tar << " NOT FOUND!\n";
+}
+
+// Sort students by ID (for binary search)
+void bubble_sort(struct Student *s, int n)
+{
+    for (int i = 1; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i ; j++) 
+        {
+            if (s[j].id > s[j + 1].id)
+            {
+                Student temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main()
+{
+    int n;
+    cout << "Enter number of Students: ";
+    cin >> n;
+
+    Student *s = new Student[n]; // dynamic memory
+
+    addStudent(s, n);
+
+    cout << "\nSTUDENT RECORDS: \n";
+    display(s, n);
+
+    int choice, id;
+    cout << "\nEnter ID to search: ";
+    cin >> id;
+
+    cout << "\nChoose search method: \n";
+    cout << "(1) Linear Search\n(2) Binary Search\n(3) Linear & Binary Search\n";
+    cout << "Enter choice: ";
+    cin >> choice;
+
+    if (choice == 1)
+        linear_search(s, n, id);
+    else if (choice == 2)
+    {
+        bubble_sort(s, n);
+        binary_search(s, 0, n - 1, id);
+    }
+    else if (choice == 3)
+    {
+        linear_search(s, n, id);
+        bubble_sort(s, n);
+        binary_search(s, 0, n - 1, id);
+    }
+    else
+        cout << "\nInvalid choice!\n";
+
+    delete[] s;
+    return 0;
+}
