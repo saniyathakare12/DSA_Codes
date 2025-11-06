@@ -1,0 +1,113 @@
+#include <iostream>
+using namespace std;
+
+#define SIZE 5  // Maximum size of the queue
+
+class CircularQueue {
+    int items[SIZE];
+    int front, rear;
+
+public:
+    CircularQueue() {
+        front = -1;
+        rear = -1;
+    }
+
+    // Check if the queue is full
+    bool isFull() {
+        return (front == 0 && rear == SIZE - 1) || (front == rear + 1);
+    }
+
+    // Check if the queue is empty
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    // Insert element into circular queue
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue is full (Overflow)\n";
+            return;
+        }
+
+        if (front == -1) // first element
+            front = 0;
+
+        rear = (rear + 1) % SIZE;
+        items[rear] = value;
+        cout << value << " inserted into queue\n";
+    }
+
+    // Delete element from circular queue
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty (Underflow)\n";
+            return;
+        }
+
+        cout << items[front] << " deleted from queue\n";
+
+        if (front == rear) {
+            // Queue has only one element
+            front = -1;
+            rear = -1;
+        } else {
+            front = (front + 1) % SIZE;
+        }
+    }
+
+    // Display queue elements
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+            return;
+        }
+
+        cout << "Circular Queue elements: ";
+        int i = front;
+        while (true) {
+            cout << items[i] << " ";
+            if (i == rear)
+                break;
+            i = (i + 1) % SIZE;
+        }
+        cout << endl;
+    }
+};
+
+// Main function
+int main() {
+    CircularQueue q;
+    int choice, value;
+
+    while (true) {
+        cout << "\n--- Circular Queue Menu ---\n";
+        cout << "1. Insert (Enqueue)\n";
+        cout << "2. Delete (Dequeue)\n";
+        cout << "3. Display\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> value;
+                q.enqueue(value);
+                break;
+            case 2:
+                q.dequeue();
+                break;
+            case 3:
+                q.display();
+                break;
+            case 4:
+                cout << "Exiting...\n";
+                return 0;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    }
+
+    return 0;
+}
